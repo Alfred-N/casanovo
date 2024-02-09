@@ -6,3 +6,9 @@ conda activate casanovo_env
 
 # Install casanovo (locally from our fork)
 pip install .
+
+# we need pyarrow for the conversion script
+pip install pyarrow
+
+#After installation, test that it was successful by viewing the Casanovo command line interface help:
+casanovo --help
