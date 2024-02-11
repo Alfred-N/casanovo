@@ -11,6 +11,22 @@ if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
 
+def translate_modifications(sequence):
+    # Mapping of modifications from dataset to model expected format
+    modification_mapping = {
+        "C(+57.02)": "C+57.021",
+        "M(+15.99)": "M+15.995",
+        "N(+.98)": "N+0.984",
+        "Q(+.98)": "Q+0.984",
+        # Add more mappings as necessary
+    }
+
+    for original, translated in modification_mapping.items():
+        sequence = sequence.replace(original, translated)
+
+    return sequence
+
+
 def convert_parquet_to_mgf(input_file, output_file):
     # Load the Parquet file
     df = pd.read_parquet(input_file)
@@ -28,8 +44,8 @@ def convert_parquet_to_mgf(input_file, output_file):
             f.write(f"CHARGE={row['precursor_charge']}+\n")
             # f.write(f"SCANS=F1:{index}\n")  # Assuming index for SCANS as well, adjust as necessary
             # f.write(f"RTINSECONDS={row.get('rtinseconds', 0)}\n")  # Placeholder, add this column to your data if available
-            f.write(f"SEQ={row['modified_sequence']}\n")
-
+            _SEQ = row["modified_sequence"]
+            f.write(f"SEQ={translate_modifications(_SEQ)}\n")
             # Write the m/z and intensity pairs
             for mz, intensity in zip(row["mz_array"], row["intensity_array"]):
                 f.write(f"{mz} {intensity}\n")
