@@ -1,138 +1,90 @@
 ###
-# Casanovo configuration.
-# Blank entries are interpreted as "None".
+# Config file for casanovo. Edit this to change parameters for train, eval, and denovo.
+# Note that blank entries are interpreted as "None"
 ###
 
-###
-# The following parameters can be modified when running inference or
-# when fine-tuning an existing Casanovo model.
-###
-
-# Max absolute difference allowed with respect to observed precursor m/z
-# Predictions outside the tolerance range are assigned a negative peptide score.
-precursor_mass_tol: 50  # ppm
-# Isotopes to consider when comparing predicted and observed precursor m/z's
-isotope_error_range: [0, 1]
-# The minimum length of predicted peptides
-min_peptide_len: 6
-# Number of spectra in one inference batch
-predict_batch_size: 1024
-# Number of beams used in beam search
-n_beams: 1
-# Number of PSMs for each spectrum
-top_match: 1
-# The hardware accelerator to use. Must be one of:
-# "cpu", "gpu", "tpu", "ipu", "hpu", "mps", or "auto"
-accelerator: "auto"
-# The devices to use. Can be set to a positive number int,
-# or the value -1 to indicate all available devices should be used,
-# If left empty, the appropriate number will be automatically
-# selected for automatic selected on the chosen accelerator.
-devices:
-
-###
-# The following parameters should only be modified if you are training a new
-# Casanovo model from scratch.
-###
-
-# Random seed to ensure reproducible results
+#Random seed to be used across the pipeline
 random_seed: 454
 
-# OUTPUT OPTIONS
-# Logging frequency in training steps
-n_log: 1
-# Tensorboard directory to use for keeping track of training metrics
-tb_summarywriter:
-# Save the top k model checkpoints during training. -1 saves all, and
-# leaving this field empty saves none.
-save_top_k: 5
-# Path to saved checkpoints
-model_save_folder_path: ""
-# Model validation and checkpointing frequency in training steps
-val_check_interval: 50_000
+#Train data options
+train_annot_spec_idx_path: casanovo_train.hdf5 #path to write the training data index file, starts at os.getcwd()
+train_spec_idx_overwrite: True
 
-# SPECTRUM PROCESSING OPTIONS
-# Number of the most intense peaks to retain, any remaining peaks are discarded
+#Validation data options
+val_annot_spec_idx_path: casanovo_val.hdf5 #path to write the validation data index file, starts at os.getcwd()
+val_spec_idx_overwrite: True
+
+#Test data options
+test_annot_spec_idx_path: casanovo_test.hdf5 #path to write the test data index file
+test_spec_idx_overwrite: True
+
+#Preprocessing parameters
+preprocess_spec: True #Should be True when using raw mass spec data. Use False when reproducing Casanovo results with the provided benchmark data set which is pre-processed
 n_peaks: 150
-# Min peak m/z allowed, peaks with smaller m/z are discarded
-min_mz: 50.0
-# Max peak m/z allowed, peaks with larger m/z are discarded
-max_mz: 2500.0
-# Min peak intensity allowed, less intense peaks are discarded
+min_mz: 50.52564895 #1.0005079 * 50.5 
+max_mz: 2500
 min_intensity: 0.01
-# Max absolute m/z difference allowed when removing the precursor peak
-remove_precursor_tol: 2.0  # Da
-# Max precursor charge allowed, spectra with larger charge are skipped
-max_charge: 10
+fragment_tol_mass: 2  # Da
 
-# MODEL ARCHITECTURE OPTIONS
-# Dimensionality of latent representations, i.e. peak embeddings
+#Hardware options
+num_workers: 1
+gpus: [] #[] for CPU, int list (ex. [0, 1, ...]) to specify GPUs
+
+#Model options
 dim_model: 512
-# Number of attention heads
 n_head: 8
-# Dimensionality of fully connected layers
 dim_feedforward: 1024
-# Number of transformer layers in spectrum encoder and peptide decoder
 n_layers: 9
-# Dropout rate for model weights
-dropout: 0.0
-# Number of dimensions to use for encoding peak intensity
-# Projected up to ``dim_model`` by default and summed with the peak m/z encoding
-dim_intensity:
-# Max decoded peptide length
+dropout: 0
+dim_intensity: 
+custom_encoder: 
 max_length: 100
-# Number of warmup iterations for learning rate scheduler
-warmup_iters: 100_000
-# Max number of iterations for learning rate scheduler
-max_iters: 600_000
-# Learning rate for weight updates during training
-learning_rate: 5e-4
-# Regularization term for weight updates
-weight_decay: 1e-5
-# Amount of label smoothing when computing the training loss
-train_label_smoothing: 0.01
-
-# TRAINING/INFERENCE OPTIONS
-# Number of spectra in one training batch
-train_batch_size: 32
-# Max number of training epochs
-max_epochs: 30
-# Number of validation steps to run before training begins
-num_sanity_val_steps: 0
-# Set to "False" to further train a pre-trained Casanovo model
-train_from_scratch: True
-# Calculate peptide and amino acid precision during training. this
-# is expensive, so we recommend against it.
-calculate_precision: False
-
-# AMINO ACID AND MODIFICATION VOCABULARY
 residues:
-  "G": 57.021464
-  "A": 71.037114
-  "S": 87.032028
-  "P": 97.052764
-  "V": 99.068414
-  "T": 101.047670
-  "C+57.021": 160.030649 # 103.009185 + 57.021464
-  "L": 113.084064
-  "I": 113.084064
-  "N": 114.042927
-  "D": 115.026943
-  "Q": 128.058578
-  "K": 128.094963
-  "E": 129.042593
-  "M": 131.040485
-  "H": 137.058912
-  "F": 147.068414
-  "R": 156.101111
-  "Y": 163.063329
-  "W": 186.079313
-  # Amino acid modifications.
-  "M+15.995": 147.035400    # Met oxidation:   131.040485 + 15.994915
-  "N+0.984": 115.026943     # Asn deamidation: 114.042927 +  0.984016
-  "Q+0.984": 129.042594     # Gln deamidation: 128.058578 +  0.984016
-  # N-terminal modifications.
-  "+42.011": 42.010565      # Acetylation
-  "+43.006": 43.005814      # Carbamylation
-  "-17.027": -17.026549     # NH3 loss
-  "+43.006-17.027": 25.980265      # Carbamylation and NH3 loss
+  G: 57.021463735
+  A: 71.037113805
+  S: 87.032028435
+  P: 97.052763875
+  V: 99.068413945
+  T: 101.047678505
+  C+57.021: 160.030644505 #103.009184505 + 57.02146
+  L: 113.084064015
+  I: 113.084064015
+  N: 114.042927470
+  D: 115.026943065
+  Q: 128.058577540
+  K: 128.094963050
+  E: 129.042593135
+  M: 131.040484645
+  H: 137.058911875
+  F: 147.068413945
+  R: 156.101111050
+  Y: 163.063328575
+  W: 186.079312980
+  # AA mods:
+  M+15.995: 147.035399645 #131.040484645 + 15.994915  # Met Oxidation
+  N+0.984: 115.02694347 #114.042927470 + 0.984016,  # Asn Deamidation
+  Q+0.984: 129.04259354 #128.058577540 + 0.984016,  # Gln Deamidation
+max_charge: 10
+n_log: 1
+tb_summarywriter: 
+warmup_iters: 100000
+max_iters: 600000
+learning_rate: 5e-4
+weight_decay: 1e-5
+
+#Training/inference options
+train_batch_size: 32
+val_batch_size: 1024
+test_batch_size: 1024
+
+accelerator: "ddp"
+logger: 
+max_epochs: 30
+num_sanity_val_steps: 0
+
+train_from_scratch: True
+
+save_model: False
+model_save_folder_path: ''
+save_weights_only: True
+every_n_epochs: 1
