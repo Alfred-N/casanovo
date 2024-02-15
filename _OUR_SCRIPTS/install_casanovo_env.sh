@@ -1,5 +1,5 @@
-conda create --name casanovo_env python=3.10
-conda activate casanovo_env
+conda create --name casanovo_2.1.1 python=3.10
+conda activate casanovo_2.1.1
 
 # Optional GPU support 
 # conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia

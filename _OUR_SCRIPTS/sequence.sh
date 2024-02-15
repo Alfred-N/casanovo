@@ -1,17 +1,17 @@
 #!/bin/bash
 
-MGF_DATA_DIR="/Users/alfred/Datasets/9_species_MGF"
+MGF_DATA_DIR="/Users/alfred/Datasets/OLD_FORMAT_9_species_MGF"
 
-# Full paths for the required MGF files with suffixes appended
-TRAINING_SPECTRA_PATH1="$MGF_DATA_DIR/train-00000-of-00002-ca1fbc3de7c99259.mgf"
-TRAINING_SPECTRA_PATH2="$MGF_DATA_DIR/train-00001-of-00002-fb1cb1b5c4a4ef4f.mgf"
-VALIDATION_SPECTRA_PATH="$MGF_DATA_DIR/validation-00000-of-00001-b84568f5bf3ba95d.mgf"
+# Paths to folders containing the MGF files
+TRAINING_SPECTRA_PATH="$MGF_DATA_DIR/train"
+VALIDATION_SPECTRA_PATH="$MGF_DATA_DIR/val"
+TEST_SPECTRA_PATH="$MGF_DATA_DIR/test"
 
-# conda deactivate
-# conda activate casanovo_env
+CHECKPOINT_PATH="/Users/alfred/Checkpoints/Casanovo/casanovo_excl_yeast.ckpt"
+CONFIG_PATH="/Users/alfred/Documents/Code/casanovo/_OUR_SCRIPTS/configs/default.yaml"
 
 # Eval
-# casanovo evaluate "$VALIDATION_SPECTRA_PATH"
+casanovo --mode "eval" --test_data_path "$VALIDATION_SPECTRA_PATH" --model_path "$CHECKPOINT_PATH" --config_path "$CONFIG_PATH"
 
 # Train
-casanovo sequence -o test_results.mztab  "$VALIDATION_SPECTRA_PATH"
+# casanovo sequence -o test_results.mztab  "$VALIDATION_SPECTRA_PATH"
