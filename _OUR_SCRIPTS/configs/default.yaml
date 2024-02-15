@@ -36,8 +36,8 @@ n_head: 8
 dim_feedforward: 1024
 n_layers: 9
 dropout: 0
-dim_intensity: 
-custom_encoder: 
+dim_intensity: null
+custom_encoder: null
 max_length: 100
 residues:
   G: 57.021463735
@@ -78,7 +78,7 @@ val_batch_size: 1024
 test_batch_size: 1024
 
 accelerator: "ddp"
-logger: 
+logger: null
 max_epochs: 30
 num_sanity_val_steps: 0
 
