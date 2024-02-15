@@ -13,5 +13,5 @@ VALIDATION_SPECTRA_PATH="$MGF_DATA_DIR/validation-00000-of-00001-b84568f5bf3ba95
 # Eval
 # casanovo evaluate "$VALIDATION_SPECTRA_PATH"
 
-# Train
+# Sequence
 casanovo sequence -o test_results.mztab  "$VALIDATION_SPECTRA_PATH"
