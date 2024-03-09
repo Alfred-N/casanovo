@@ -39,15 +39,6 @@ def convert_mgf(mgf_in_path, mgf_out_path):
 
     mgf.write(spectra, mgf_out_path)
 
-    with mgf.MGF(mgf_out_path) as f_in:
-        for spectrum_dict in tqdm(f_in):
-            dn_seq = spectrum_dict["params"]["seq"]
-            for dn_mod in mod_dict.keys():
-                dn_seq = dn_seq.replace(dn_mod, mod_dict[dn_mod])
-            for n_mod in n_term_mods.keys():
-                if n_mod in dn_seq:
-                    dn_seq = n_term_mods[n_mod] + dn_seq.replace(n_mod, "")
-
 
 input_mgf = "/Users/alfred/Datasets/dummy_mgf/BY_04_1.mgf"
 output_mgf = "zzz_test.mgf"
