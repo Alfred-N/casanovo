@@ -40,6 +40,21 @@ def convert_mgf(mgf_in_path, mgf_out_path):
     mgf.write(spectra, mgf_out_path)
 
 
-input_mgf = "/Users/alfred/Datasets/dummy_mgf/BY_04_1.mgf"
-output_mgf = "zzz_test.mgf"
-convert_mgf(input_mgf, output_mgf)
+# input_mgf = "/Users/alfred/Datasets/dummy_mgf/BY_04_1.mgf"
+# output_mgf = "zzz_test.mgf"
+# convert_mgf(input_mgf, output_mgf)
+
+input_dir = "/proj/bedrock/datasets/casanovo_datasets/ninespecies_revised_V2/massive.ucsd.edu/v01/MSV000090982/updates/2023-03-08_woutb_2c43c18c/peak/9speciesbenchmark/"
+output_dir_base = "/proj/bedrock/datasets/casanovo_datasets/ninespecies_revised_CasaNovo_PTM_notation"
+
+for root, dirs, files in tqdm(os.walk(input_dir), desc="Converting MGFS to CasaNovo's expected format"):
+    for file in files:
+        if file.endswith(".mgf"):
+            input_file_path = os.path.join(root, file)
+            relative_path = os.path.relpath(root, input_dir)
+            output_dir = os.path.join(output_dir_base, relative_path)
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+            output_file_path = os.path.join(output_dir, file)
+            # print(output_file_path)
+            convert_mgf(input_file_path, output_file_path)
